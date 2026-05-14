@@ -25,3 +25,10 @@ dist-ssr
 
 # supabase
 supabase/.temp
+node_modules
+dist
+.env
+.DS_Store
+.vite
+.cache
+coverage
