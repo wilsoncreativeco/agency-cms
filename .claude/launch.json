@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "agency-cms",
+      "runtimeExecutable": "/Users/georgewilson/agency-cms/node_modules/.bin/vite",
+      "runtimeArgs": ["--port", "3000"],
+      "port": 3000
+    }
+  ]
+}
