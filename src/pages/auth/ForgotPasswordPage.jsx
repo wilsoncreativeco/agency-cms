@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { ArrowLeft, Loader2, Zap, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react'
 import { authService } from '@/services/auth.service'
 import { Button } from '@/components/ui/button'
 import { Input }  from '@/components/ui/input'
@@ -32,9 +32,12 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm space-y-8">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
-            <Zap className="h-4 w-4 text-background" />
+            <span className="text-sm font-bold text-background" style={{ fontFamily: 'Georgia, serif' }}>W</span>
           </div>
-          <span className="text-lg font-semibold">Agency CMS</span>
+          <div className="flex flex-col leading-none gap-0.5">
+            <span className="text-xs font-bold tracking-widest uppercase">Wilson Creative</span>
+            <span style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'hsl(43 65% 42%)' }}>Co.</span>
+          </div>
         </div>
 
         {sent ? (

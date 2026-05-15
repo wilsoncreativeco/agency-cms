@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Eye, EyeOff, Loader2, Zap } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button }  from '@/components/ui/button'
 import { Input }   from '@/components/ui/input'
@@ -39,12 +39,15 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[hsl(240,5.9%,10%)] flex-col justify-between p-12">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-            <Zap className="h-4 w-4 text-white" />
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12" style={{ backgroundColor: '#111111' }}>
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: 'rgba(193,155,60,0.15)' }}>
+            <span className="text-sm font-bold" style={{ color: '#C19B3C', fontFamily: 'Georgia, serif' }}>W</span>
           </div>
-          <span className="text-lg font-semibold text-white">Agency CMS</span>
+          <div className="flex flex-col leading-none gap-0.5">
+            <span className="text-xs font-bold tracking-widest text-white uppercase">Wilson Creative</span>
+            <span style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#C19B3C', textTransform: 'uppercase' }}>Co.</span>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -63,8 +66,8 @@ export default function LoginPage() {
               { label: 'Pages managed', value: '180+' },
               { label: 'Uptime',         value: '99.9%' },
             ].map(stat => (
-              <div key={stat.label} className="rounded-lg bg-white/5 p-4">
-                <div className="text-2xl font-bold text-white">{stat.value}</div>
+              <div key={stat.label} className="rounded-lg p-4" style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(193,155,60,0.15)' }}>
+                <div className="text-2xl font-bold" style={{ color: '#C19B3C' }}>{stat.value}</div>
                 <div className="text-xs text-white/50 mt-1">{stat.label}</div>
               </div>
             ))}
@@ -72,7 +75,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-xs text-white/30">
-          © {new Date().getFullYear()} Agency CMS. All rights reserved.
+          © {new Date().getFullYear()} Wilson Creative Co. All rights reserved.
         </p>
       </div>
 
@@ -82,9 +85,12 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="flex items-center gap-2.5 lg:hidden">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
-              <Zap className="h-4 w-4 text-background" />
+              <span className="text-sm font-bold text-background" style={{ fontFamily: 'Georgia, serif' }}>W</span>
             </div>
-            <span className="text-lg font-semibold">Agency CMS</span>
+            <div className="flex flex-col leading-none gap-0.5">
+              <span className="text-xs font-bold tracking-widest uppercase">Wilson Creative</span>
+              <span style={{ fontSize: '9px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'hsl(43 65% 42%)' }}>Co.</span>
+            </div>
           </div>
 
           <div className="space-y-2">

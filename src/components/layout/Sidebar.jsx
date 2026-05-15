@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, Image, Settings, Users,
-  Building2, Zap, ChevronRight,
+  Building2, ChevronRight,
 } from 'lucide-react'
 import { useAuth }           from '@/contexts/AuthContext'
 import { ClientSelector }    from './ClientSelector'
@@ -28,8 +28,8 @@ function NavItem({ href, icon: Icon, label, end }) {
         cn(
           'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
           isActive
-            ? 'bg-[hsl(var(--sidebar-accent))] text-white'
-            : 'text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] hover:text-white'
+            ? 'bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-background))] font-semibold'
+            : 'text-[hsl(var(--sidebar-foreground))] hover:bg-white/8 hover:text-white'
         )
       }
     >
@@ -51,10 +51,13 @@ export function Sidebar({ open }) {
     >
       {/* Logo */}
       <div className="flex h-14 items-center gap-2.5 px-5 border-b border-[hsl(var(--sidebar-border))]">
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/10">
-          <Zap className="h-3.5 w-3.5 text-white" />
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[hsl(var(--brand-gold)/0.15)]">
+          <span className="text-xs font-bold text-[hsl(var(--brand-gold))]" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>W</span>
         </div>
-        <span className="text-sm font-semibold text-white">Agency CMS</span>
+        <div className="flex flex-col leading-none">
+          <span className="text-[11px] font-bold tracking-widest text-white uppercase">Wilson Creative</span>
+          <span className="text-[9px] tracking-widest text-[hsl(var(--brand-gold))] uppercase">Co.</span>
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
