@@ -1,6 +1,6 @@
 #!/bin/bash
 # Run this from inside any client's Vite project folder:
-#   bash ~/agency-cms/setup-client.sh
+#   bash ~/Desktop/agency-cms/setup-client.sh
 
 set -e
 
