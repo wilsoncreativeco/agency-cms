@@ -92,7 +92,7 @@ export default function PagesListPage() {
               <div onClick={e => e.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>

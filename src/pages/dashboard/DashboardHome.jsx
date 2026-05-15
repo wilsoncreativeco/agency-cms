@@ -56,25 +56,40 @@ export default function DashboardHome() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Quick actions</CardTitle>
+            <CardTitle className="text-base">What would you like to do?</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <Button variant="outline" size="sm" asChild className="justify-start gap-2">
-              <Link to="/dashboard/pages">
-                <FileText className="h-4 w-4" /> Edit pages
-              </Link>
-            </Button>
-            <Button variant="outline" size="sm" asChild className="justify-start gap-2">
-              <Link to="/dashboard/media">
-                <Image className="h-4 w-4" /> Upload media
-              </Link>
-            </Button>
+          <CardContent className="grid grid-cols-1 gap-3">
+            <Link to="/dashboard/pages" className="flex items-center gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Edit my pages</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Update text, images and content on your website</p>
+              </div>
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
+            </Link>
+            <Link to="/dashboard/media" className="flex items-center gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
+                <Image className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Upload images</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Add new photos and media to your library</p>
+              </div>
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
+            </Link>
             {client?.custom_domain && (
-              <Button variant="outline" size="sm" asChild className="justify-start gap-2">
-                <a href={`https://${client.custom_domain}`} target="_blank" rel="noreferrer">
-                  <Globe className="h-4 w-4" /> View site
-                </a>
-              </Button>
+              <a href={`https://${client.custom_domain}`} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                  <Globe className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">View my website</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">See your live site as visitors see it</p>
+                </div>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
+              </a>
             )}
           </CardContent>
         </Card>
