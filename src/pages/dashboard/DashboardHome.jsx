@@ -1,140 +1,127 @@
-import { FileText, Image, Users, Globe, ArrowUpRight, Activity } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
-import { formatDate } from '@/lib/utils'
-
-const statsClient = [
-  { label: 'Pages',        icon: FileText, value: '—', href: '/dashboard/pages',  color: 'text-blue-500'   },
-  { label: 'Media files',  icon: Image,    value: '—', href: '/dashboard/media',  color: 'text-purple-500' },
-  { label: 'Team members', icon: Users,    value: '—', href: '/dashboard/users',  color: 'text-emerald-500'},
-]
+import { FileText, Image, Globe, ArrowUpRight, ExternalLink, Pencil } from 'lucide-react'
+import { useAuth }  from '@/contexts/AuthContext'
+import { usePages } from '@/hooks/usePages'
+import { useClient } from '@/hooks/useClient'
+import { Badge }   from '@/components/ui/badge'
+import { Button }  from '@/components/ui/button'
+import { Link }    from 'react-router-dom'
 
 export default function DashboardHome() {
-  const { profile, client, isAdmin } = useAuth()
+  const { profile, isAdmin } = useAuth()
+  const { client }           = useClient()
+  const { pages }            = usePages()
+  const name = profile?.full_name?.split(' ')[0] ?? 'there'
   const greeting = getGreeting()
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
+    <div className="max-w-3xl mx-auto space-y-10 py-2">
+
+      {/* Welcome */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {greeting}, {profile?.full_name?.split(' ')[0] ?? 'there'} 👋
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {isAdmin
-            ? 'Here\'s an overview of your agency.'
-            : `Managing ${client?.business_name ?? 'your website'}.`
-          }
-        </p>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-1">{greeting}</p>
+        <h1 className="text-3xl font-bold tracking-tight">{name}</h1>
+        {client && (
+          <p className="text-muted-foreground mt-1 text-sm">
+            You're managing <span className="text-foreground font-medium">{client.business_name}</span>
+          </p>
+        )}
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {statsClient.map(stat => (
-          <Card key={stat.label} className="group hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.label}</CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <Link
-                to={stat.href}
-                className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                View all <ArrowUpRight className="h-3 w-3" />
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Live site card */}
+      {client?.custom_domain && (
+        <a
+          href={`https://${client.custom_domain}`}
+          target="_blank"
+          rel="noreferrer"
+          className="group flex items-center justify-between rounded-2xl border bg-gradient-to-br from-background to-muted/30 p-6 hover:border-[hsl(var(--brand-gold)/0.4)] transition-all duration-200 hover:shadow-lg"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(var(--brand-gold)/0.1)] text-[hsl(var(--brand-gold))]">
+              <Globe className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm">View your live website</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{client.custom_domain}</p>
+            </div>
+          </div>
+          <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-[hsl(var(--brand-gold))] transition-colors" />
+        </a>
+      )}
 
-      {/* Quick actions */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">What would you like to do?</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-3">
-            <Link to="/dashboard/pages" className="flex items-center gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                <FileText className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="font-medium text-sm">Edit my pages</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Update text, images and content on your website</p>
-              </div>
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
-            </Link>
-            <Link to="/dashboard/media" className="flex items-center gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-600">
-                <Image className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="font-medium text-sm">Upload images</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Add new photos and media to your library</p>
-              </div>
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
-            </Link>
-            {client?.custom_domain && (
-              <a href={`https://${client.custom_domain}`} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-lg border p-4 hover:bg-muted/50 transition-colors">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                  <Globe className="h-5 w-5" />
+      {/* Pages */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Your Pages</h2>
+          <Link to="/dashboard/pages">
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1">
+              All pages <ArrowUpRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="space-y-3">
+          {pages?.length ? pages.map(page => (
+            <Link
+              key={page.id}
+              to={`/dashboard/pages/${page.id}/edit`}
+              className="group flex items-center justify-between rounded-xl border bg-card p-5 hover:border-[hsl(var(--brand-gold)/0.4)] transition-all duration-200 hover:shadow-md"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-muted-foreground group-hover:bg-[hsl(var(--brand-gold)/0.1)] group-hover:text-[hsl(var(--brand-gold))] transition-colors">
+                  <FileText className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">View my website</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">See your live site as visitors see it</p>
+                  <p className="font-medium text-sm">{page.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">/{page.slug || 'home'}</p>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-muted-foreground ml-auto shrink-0" />
-              </a>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Recent activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Activity feed will appear here as you make changes.
-            </p>
-          </CardContent>
-        </Card>
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge variant={page.status === 'published' ? 'success' : 'secondary'} className="text-[10px]">
+                  {page.status}
+                </Badge>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg border opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Pencil className="h-3.5 w-3.5" />
+                </div>
+              </div>
+            </Link>
+          )) : (
+            <div className="rounded-xl border border-dashed p-8 text-center">
+              <p className="text-sm text-muted-foreground">No pages yet.</p>
+              <Link to="/dashboard/pages">
+                <Button variant="outline" size="sm" className="mt-3">Create a page</Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Site status */}
-      {client && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Site details</CardTitle>
-              <Badge variant={client.is_active ? 'success' : 'secondary'}>
-                {client.is_active ? 'Active' : 'Inactive'}
-              </Badge>
+      {/* Quick links */}
+      <div>
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <Link to="/dashboard/media" className="group flex items-center gap-3 rounded-xl border bg-card p-4 hover:border-[hsl(var(--brand-gold)/0.4)] transition-all duration-200">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-[hsl(var(--brand-gold)/0.1)] transition-colors">
+              <Image className="h-4 w-4 text-muted-foreground group-hover:text-[hsl(var(--brand-gold))]" />
             </div>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {[
-              { label: 'Business',  value: client.business_name },
-              { label: 'Slug',      value: client.slug },
-              { label: 'Domain',    value: client.custom_domain ?? 'Not set' },
-              { label: 'Plan',      value: client.plan },
-            ].map(item => (
-              <div key={item.label}>
-                <p className="text-xs text-muted-foreground">{item.label}</p>
-                <p className="mt-0.5 text-sm font-medium truncate">{item.value}</p>
+            <div>
+              <p className="text-sm font-medium">Upload photos</p>
+              <p className="text-xs text-muted-foreground">Add images to your library</p>
+            </div>
+          </Link>
+          {client?.custom_domain && (
+            <a href={`https://${client.custom_domain}`} target="_blank" rel="noreferrer" className="group flex items-center gap-3 rounded-xl border bg-card p-4 hover:border-[hsl(var(--brand-gold)/0.4)] transition-all duration-200">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-[hsl(var(--brand-gold)/0.1)] transition-colors">
+                <Globe className="h-4 w-4 text-muted-foreground group-hover:text-[hsl(var(--brand-gold))]" />
               </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+              <div>
+                <p className="text-sm font-medium">View live site</p>
+                <p className="text-xs text-muted-foreground">{client.custom_domain}</p>
+              </div>
+            </a>
+          )}
+        </div>
+      </div>
+
     </div>
   )
 }

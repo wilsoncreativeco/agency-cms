@@ -46,6 +46,27 @@ const BLOCK_LABELS = {
   team: 'Meet the Team', projects: 'Projects', marquee: 'Marquee / Ticker',
 }
 
+const BLOCK_ICONS = {
+  hero: '🏔', about: '👤', services: '⚡', gallery: '🖼',
+  testimonials: '💬', faq: '❓', cta: '🎯', contact: '📬',
+  richtext: '📝', team: '👥', projects: '🏗', marquee: '📢',
+}
+
+const BLOCK_DESCRIPTIONS = {
+  hero:         'The banner at the top of your page',
+  about:        'Your story, photo and background',
+  services:     'The service cards visitors can explore',
+  gallery:      'A grid of your project photos',
+  testimonials: 'Reviews and quotes from clients',
+  faq:          'Common questions and answers',
+  cta:          'A call-to-action button section',
+  contact:      'Contact details and enquiry form',
+  richtext:     'A block of formatted text',
+  team:         'Your team members and bios',
+  projects:     'Current and recent project cards',
+  marquee:      'The scrolling text ticker',
+}
+
 export function BlockEditor({ block, onUpdated }) {
   const { toast }    = useToast()
   const [content, setContent] = useState(block?.content_json ?? {})
@@ -105,16 +126,24 @@ export function BlockEditor({ block, onUpdated }) {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-10">
+      <div className="flex items-center justify-between px-5 py-4 border-b bg-background sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <h3 className="text-sm font-semibold">{BLOCK_LABELS[block.block_type] ?? block.block_type}</h3>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-base">
+            {BLOCK_ICONS[block.block_type] ?? '📄'}
+          </div>
+          <div>
+            <h3 className="text-sm font-bold leading-none">{BLOCK_LABELS[block.block_type] ?? block.block_type}</h3>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {BLOCK_DESCRIPTIONS[block.block_type] ?? 'Edit this section'}
+            </p>
+          </div>
           {dirty && (
-            <span className="inline-flex items-center gap-1 text-[10px] text-amber-500 font-medium">
+            <span className="inline-flex items-center gap-1 text-[10px] text-amber-500 font-medium ml-1">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
               Unsaved
             </span>
           )}
-          {saving && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+          {saving && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground ml-1" />}
         </div>
 
         <div className="flex items-center gap-3">

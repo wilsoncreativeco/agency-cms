@@ -111,13 +111,13 @@ export function BlockList({ blocks, setBlocks, clientId, pageId, selectedId, onS
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-4 py-3 border-b">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Sections
+        <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          Page Sections
         </span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="outline" className="h-7 gap-1 text-xs">
-              <Plus className="h-3.5 w-3.5" /> Add
+            <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs border-[hsl(var(--brand-gold)/0.3)] hover:border-[hsl(var(--brand-gold)/0.6)] hover:bg-[hsl(var(--brand-gold)/0.05)] hover:text-[hsl(var(--brand-gold))]">
+              <Plus className="h-3.5 w-3.5" /> Add Section
               <ChevronDown className="h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
@@ -175,7 +175,8 @@ function SortableBlockItem({ block, isSelected, onSelect, onToggleVisible, onDel
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id })
   const style = { transform: CSS.Transform.toString(transform), transition }
 
-  const label = BLOCK_TYPES.find(t => t.type === block.block_type)?.label ?? block.block_type
+  const label   = BLOCK_TYPES.find(t => t.type === block.block_type)?.label ?? block.block_type
+  const icon    = BLOCK_ICONS[block.block_type] ?? '📄'
   const preview = getBlockPreview(block)
 
   return (
@@ -183,31 +184,46 @@ function SortableBlockItem({ block, isSelected, onSelect, onToggleVisible, onDel
       ref={setNodeRef}
       style={style}
       className={cn(
-        'group flex items-center gap-2 border-b px-3 py-3 cursor-pointer transition-colors last:border-0',
-        isSelected ? 'bg-accent' : 'hover:bg-muted/50',
-        isDragging  ? 'opacity-50' : '',
-        !block.visible && 'opacity-50'
+        'group relative flex items-start gap-3 mx-2 my-1.5 rounded-xl border p-3.5 cursor-pointer transition-all duration-150',
+        isSelected
+          ? 'border-[hsl(var(--brand-gold)/0.6)] bg-[hsl(var(--brand-gold)/0.06)] shadow-sm'
+          : 'border-border hover:border-border/80 hover:bg-muted/40 bg-card',
+        isDragging  ? 'opacity-50 shadow-xl' : '',
+        !block.visible && 'opacity-40'
       )}
       onClick={onSelect}
     >
+      {/* Drag handle */}
       <button
-        className="shrink-0 cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground"
+        className="mt-0.5 shrink-0 cursor-grab active:cursor-grabbing touch-none text-muted-foreground/40 hover:text-muted-foreground transition-colors"
         {...attributes} {...listeners}
         onClick={e => e.stopPropagation()}
       >
         <GripVertical className="h-4 w-4" />
       </button>
 
-      <span className="text-base leading-none shrink-0">{BLOCK_ICONS[block.block_type]}</span>
-
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium leading-none">{label}</p>
-        {preview && <p className="text-xs text-muted-foreground mt-0.5 truncate">{preview}</p>}
+      {/* Icon */}
+      <div className={cn(
+        'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg transition-colors',
+        isSelected ? 'bg-[hsl(var(--brand-gold)/0.15)]' : 'bg-muted'
+      )}>
+        {icon}
       </div>
 
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <p className={cn('text-sm font-semibold leading-tight', isSelected ? 'text-foreground' : 'text-foreground/90')}>
+          {label}
+        </p>
+        <p className="text-xs text-muted-foreground mt-0.5 truncate">
+          {preview ?? (block.visible ? 'Click to edit' : 'Hidden')}
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" onClick={e => e.stopPropagation()}>
         <button
-          className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
+          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           onClick={onToggleVisible}
           title={block.visible ? 'Hide section' : 'Show section'}
         >
@@ -216,14 +232,14 @@ function SortableBlockItem({ block, isSelected, onSelect, onToggleVisible, onDel
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <button className="p-1 rounded text-muted-foreground hover:text-destructive transition-colors">
+            <button className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete {label} section?</AlertDialogTitle>
-              <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+              <AlertDialogTitle>Delete {label}?</AlertDialogTitle>
+              <AlertDialogDescription>This will permanently remove this section and all its content. This cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
