@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Globe, Loader2, Eye, Zap, LayoutList, PencilLine } from 'lucide-react'
+import { ArrowLeft, Globe, Loader2, Eye, Zap, LayoutList, PencilLine, Monitor, RefreshCw } from 'lucide-react'
 import { pageService }        from '@/services/page.service'
 import { useContentBlocks }   from '@/hooks/useContentBlocks'
 import { useClient }          from '@/hooks/useClient'
@@ -25,6 +25,8 @@ export default function PageEditorPage() {
   const [selectedBlock, setSelectedBlock] = useState(null)
   // Mobile: 'sections' | 'editor'
   const [mobilePanel, setMobilePanel] = useState('sections')
+  const [showPreview, setShowPreview] = useState(false)
+  const [iframeKey,   setIframeKey]   = useState(0)
 
   const { blocks, setBlocks, loading: blocksLoading } = useContentBlocks(pageId)
 
@@ -67,7 +69,9 @@ export default function PageEditorPage() {
 
   const previewUrl = client?.custom_domain
     ? `https://${client.custom_domain}/${page?.slug}`
-    : null
+    : client?.slug
+      ? `https://${client.slug}.vercel.app/${page?.slug ?? ''}`
+      : null
 
   if (pageLoading) {
     return (
@@ -101,6 +105,17 @@ export default function PageEditorPage() {
               <a href={previewUrl} target="_blank" rel="noreferrer">
                 <Eye className="h-3.5 w-3.5" /> Preview
               </a>
+            </Button>
+          )}
+          {previewUrl && (
+            <Button
+              variant={showPreview ? 'secondary' : 'outline'}
+              size="sm"
+              className="h-8 gap-1.5 text-xs hidden lg:flex"
+              onClick={() => setShowPreview(v => !v)}
+            >
+              <Monitor className="h-3.5 w-3.5" />
+              Preview
             </Button>
           )}
           <Button
@@ -188,7 +203,8 @@ export default function PageEditorPage() {
 
         {/* Right: block editor — full width on mobile when editor panel active */}
         <div className={cn(
-          'flex-1 overflow-hidden bg-muted/20',
+          'overflow-hidden bg-muted/20',
+          showPreview ? 'w-[420px] shrink-0' : 'flex-1',
           mobilePanel === 'editor' ? 'flex flex-col' : 'hidden lg:block'
         )}>
           {mobilePanel === 'editor' && !selectedBlock && (
@@ -209,6 +225,29 @@ export default function PageEditorPage() {
             }}
           />
         </div>
+
+        {showPreview && previewUrl && (
+          <div className="hidden lg:flex flex-col flex-1 border-l overflow-hidden bg-muted/10">
+            <div className="flex items-center justify-between px-3 py-2 border-b bg-background shrink-0">
+              <div className="flex items-center gap-2">
+                <Monitor className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">Live Preview</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] text-muted-foreground/60 italic">May take a moment to reflect changes</span>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setIframeKey(k => k + 1)} title="Refresh preview">
+                  <RefreshCw className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+            <iframe
+              key={iframeKey}
+              src={previewUrl}
+              title="Live preview"
+              className="w-full flex-1 border-0"
+            />
+          </div>
+        )}
       </div>
     </div>
   )

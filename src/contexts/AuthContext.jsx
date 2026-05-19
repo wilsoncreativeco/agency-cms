@@ -18,22 +18,14 @@ export function AuthProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    authService.getSession()
-      .then(async (session) => {
+    const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION') {
         if (session?.user) {
           setUser(session.user)
           await loadProfile(session.user.id)
         }
-      })
-      .catch((err) => {
-        console.error('[AuthContext] getSession failed:', err)
-      })
-      .finally(() => {
         setLoading(false)
-      })
-
-    const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
+      } else if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user)
         await loadProfile(session.user.id)
       } else if (event === 'SIGNED_OUT') {
@@ -44,7 +36,6 @@ export function AuthProvider({ children }) {
         await loadProfile(session.user.id)
       }
     })
-
     return () => subscription.unsubscribe()
   }, [loadProfile])
 

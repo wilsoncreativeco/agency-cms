@@ -15,6 +15,14 @@ import { FaqBlock }          from './blocks/FaqBlock'
 import { CtaBlock }          from './blocks/CtaBlock'
 import { ContactBlock }      from './blocks/ContactBlock'
 import { RichTextBlock }     from './blocks/RichTextBlock'
+import { TeamBlock }         from './blocks/TeamBlock'
+import { ProjectsBlock }     from './blocks/ProjectsBlock'
+
+const NullBlock = () => (
+  <p className="text-sm text-muted-foreground p-2">
+    This section is controlled by your page layout and doesn't have editable fields here.
+  </p>
+)
 
 const EDITORS = {
   hero:         HeroBlock,
@@ -26,12 +34,16 @@ const EDITORS = {
   cta:          CtaBlock,
   contact:      ContactBlock,
   richtext:     RichTextBlock,
+  team:         TeamBlock,
+  projects:     ProjectsBlock,
+  marquee:      NullBlock,
 }
 
 const BLOCK_LABELS = {
   hero: 'Hero', about: 'About', services: 'Services', gallery: 'Gallery',
   testimonials: 'Testimonials', faq: 'FAQ', cta: 'Call to Action',
   contact: 'Contact', richtext: 'Rich Text',
+  team: 'Meet the Team', projects: 'Projects', marquee: 'Marquee / Ticker',
 }
 
 export function BlockEditor({ block, onUpdated }) {

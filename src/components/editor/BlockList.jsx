@@ -34,6 +34,9 @@ const BLOCK_TYPES = [
   { type: 'cta',          label: 'Call to Action' },
   { type: 'contact',      label: 'Contact' },
   { type: 'richtext',     label: 'Rich Text' },
+  { type: 'team',         label: 'Meet the Team' },
+  { type: 'projects',     label: 'Projects' },
+  { type: 'marquee',      label: 'Marquee / Ticker' },
 ]
 
 const BLOCK_ICONS = {
@@ -46,6 +49,9 @@ const BLOCK_ICONS = {
   cta:          '🎯',
   contact:      '📬',
   richtext:     '📝',
+  team:         '👥',
+  projects:     '🏗',
+  marquee:      '📢',
 }
 
 export function BlockList({ blocks, setBlocks, clientId, pageId, selectedId, onSelect }) {
