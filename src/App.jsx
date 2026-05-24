@@ -1,16 +1,14 @@
-import { Routes, Route, Navigate, useNavigate, useEffect } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
 import { ProtectedRoute, PublicOnlyRoute } from '@/components/layout/ProtectedRoute'
 import { ToastProvider } from '@/components/ui/toast-provider'
 import { usePages }  from '@/hooks/usePages'
+import { Loader2 } from 'lucide-react'
 
 // Auth pages
 import LoginPage          from '@/pages/auth/LoginPage'
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage'
 import UpdatePasswordPage from '@/pages/auth/UpdatePasswordPage'
-
-// Dashboard shell (lazy for perf)
-import { lazy, Suspense } from 'react'
-import { Loader2 } from 'lucide-react'
 
 // Auto-redirects client to their first page in the editor
 function ClientAutoRedirect() {
