@@ -67,7 +67,7 @@ const BLOCK_DESCRIPTIONS = {
   marquee:      'The scrolling text ticker',
 }
 
-export function BlockEditor({ block, onUpdated }) {
+export function BlockEditor({ block, onUpdated, simplified = false }) {
   const { toast }    = useToast()
   const [content, setContent] = useState(block?.content_json ?? {})
   const [saving,  setSaving]  = useState(false)
@@ -147,10 +147,12 @@ export function BlockEditor({ block, onUpdated }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">{block.visible ? 'Visible' : 'Hidden'}</span>
-            <Switch checked={block.visible} onCheckedChange={handleToggleVisible} />
-          </div>
+          {!simplified && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{block.visible ? 'Visible' : 'Hidden'}</span>
+              <Switch checked={block.visible} onCheckedChange={handleToggleVisible} />
+            </div>
+          )}
           <Button
             size="sm"
             variant={dirty ? 'default' : 'outline'}
