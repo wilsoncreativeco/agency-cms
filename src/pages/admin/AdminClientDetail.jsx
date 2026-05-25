@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { ArrowLeft, Loader2, Plus, Mail, MoreHorizontal, Trash2, Globe } from 'lucide-react'
+import { ArrowLeft, Loader2, Plus, Mail, MoreHorizontal, Trash2, Globe, ExternalLink } from 'lucide-react'
 import { clientService } from '@/services/client.service'
 import { userService }   from '@/services/user.service'
+import { useAdminStore } from '@/store/adminStore'
 import { formatDate }    from '@/lib/utils'
 import { useToast }      from '@/components/ui/toast-provider'
 import { Button }        from '@/components/ui/button'
@@ -23,11 +24,17 @@ export default function AdminClientDetail() {
   const navigate     = useNavigate()
   const { toast }    = useToast()
 
+  const { setActiveClientId } = useAdminStore()
   const [client, setClient]   = useState(null)
   const [stats,  setStats]    = useState(null)
   const [users,  setUsers]    = useState([])
   const [loading, setLoading] = useState(true)
   const [inviteOpen, setInviteOpen] = useState(false)
+
+  const openEditor = () => {
+    setActiveClientId(clientId)
+    navigate('/edit')
+  }
 
   const load = async () => {
     try {
@@ -67,6 +74,9 @@ export default function AdminClientDetail() {
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/admin/clients')}>
           <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <Button size="sm" className="gap-2 bg-[hsl(var(--brand-gold))] text-[#07060a] hover:bg-[hsl(var(--brand-gold)/0.85)] ml-auto" onClick={openEditor}>
+          <ExternalLink className="h-4 w-4" /> Open editor
         </Button>
         <div className="flex-1">
           <div className="flex items-center gap-3">

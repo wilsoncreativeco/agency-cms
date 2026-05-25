@@ -1,19 +1,21 @@
 // seed-zantara.mjs
-// Usage: node seed-zantara.mjs <admin-email> <admin-password>
+// Usage: node seed-zantara.mjs <service-role-key>
 // Seeds the Zantara client's home page with all real site content.
 
 import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = 'https://ubkomeuvbrhphmajeltl.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_K0g3ryJmRO7cB_KeuvXphw_hFcNI68x'
 
-const [,, email, password] = process.argv
-if (!email || !password) {
-  console.error('Usage: node seed-zantara.mjs <email> <password>')
+const [,, serviceKey] = process.argv
+if (!serviceKey) {
+  console.error('Usage: node seed-zantara.mjs <service-role-key>')
+  console.error('Get it from: Supabase → Settings → API Keys → Legacy → service_role (Reveal)')
   process.exit(1)
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const supabase = createClient(SUPABASE_URL, serviceKey, {
+  auth: { autoRefreshToken: false, persistSession: false }
+})
 
 const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
 
@@ -37,16 +39,8 @@ const BLOCKS = [
     },
   },
   {
-    block_type: 'marquee',
-    sort_order: 1,
-    visible: true,
-    content_json: {
-      items: ['Formwork', 'Labour Hire', 'Concrete Stripping', 'Gold Coast', 'Brisbane', 'South East Queensland'],
-    },
-  },
-  {
     block_type: 'services',
-    sort_order: 2,
+    sort_order: 1,
     visible: true,
     content_json: {
       heading: 'What We Do',
@@ -71,7 +65,7 @@ const BLOCKS = [
   },
   {
     block_type: 'about',
-    sort_order: 3,
+    sort_order: 2,
     visible: true,
     content_json: {
       heading: 'Built on the Tools',
@@ -81,7 +75,7 @@ const BLOCKS = [
   },
   {
     block_type: 'projects',
-    sort_order: 4,
+    sort_order: 3,
     visible: true,
     content_json: {
       heading: 'Projects',
@@ -95,7 +89,7 @@ const BLOCKS = [
   },
   {
     block_type: 'team',
-    sort_order: 5,
+    sort_order: 4,
     visible: true,
     content_json: {
       heading: 'Meet the Team',
@@ -110,7 +104,7 @@ const BLOCKS = [
   },
   {
     block_type: 'faq',
-    sort_order: 6,
+    sort_order: 5,
     visible: true,
     content_json: {
       heading: 'Frequently Asked Questions',
@@ -126,7 +120,7 @@ const BLOCKS = [
   },
   {
     block_type: 'contact',
-    sort_order: 7,
+    sort_order: 6,
     visible: true,
     content_json: {
       heading: 'Get in Touch',
@@ -139,24 +133,47 @@ const BLOCKS = [
 ]
 
 async function seed() {
-  console.log('🔐 Signing in...')
-  const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password })
-  if (authError) { console.error('❌ Auth failed:', authError.message); process.exit(1) }
-  console.log('✅ Signed in as', authData.user.email)
+  console.log('🔑 Using service role key — bypassing auth...')
 
-  // Find Zantara client
+  // Verify this looks like a service_role key (not anon)
+  try {
+    const payload = JSON.parse(Buffer.from(serviceKey.split('.')[1], 'base64').toString())
+    if (payload.role !== 'service_role') {
+      console.error('❌ Wrong key! You passed the anon key, not the service_role key.')
+      console.error('   Get it from: Supabase → Settings → API → service_role (click Reveal)')
+      process.exit(1)
+    }
+  } catch { /* ignore parse errors, just try anyway */ }
+
+  // Find or create Zantara client
   console.log('🔍 Looking up Zantara client...')
   const { data: clients, error: clientError } = await supabase
     .from('clients')
     .select('id, business_name, slug')
     .ilike('slug', '%zantara%')
   if (clientError) { console.error('❌ Client query failed:', clientError.message); process.exit(1) }
-  if (!clients?.length) {
-    console.error('❌ No client with slug containing "zantara" found. Create the client first in the CMS admin.')
-    process.exit(1)
+
+  let client = clients?.[0]
+
+  if (!client) {
+    console.log('➕ No Zantara client found — creating one...')
+    const { data: newClient, error: createClientError } = await supabase
+      .from('clients')
+      .insert({
+        business_name: 'Zantara',
+        slug:          'zantara',
+        plan:          'starter',
+        is_active:     true,
+        settings:      {},
+      })
+      .select()
+      .single()
+    if (createClientError) { console.error('❌ Client creation failed:', createClientError.message); process.exit(1) }
+    client = newClient
+    console.log(`✅ Created client: ${client.business_name} (${client.id})`)
+  } else {
+    console.log(`✅ Found client: ${client.business_name} (${client.id})`)
   }
-  const client = clients[0]
-  console.log(`✅ Found client: ${client.business_name} (${client.id})`)
 
   // Find or create home page
   console.log('🔍 Looking up home page...')
