@@ -14,6 +14,18 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.onerror = function(msg, src, line, col, err) {
+        document.body.style.cssText = 'margin:0;background:#07060a;color:#f0ece2;font-family:monospace;padding:32px';
+        document.body.innerHTML = '<p style="color:#c5a44a;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">CMS — JS Error</p>'
+          + '<h2 style="font-size:18px;margin-bottom:16px">'+msg+'</h2>'
+          + '<pre style="background:#1a1a1a;padding:16px;border-radius:6px;font-size:12px;color:#e05c5c;white-space:pre-wrap">'
+          + 'Source: '+src+'\nLine: '+line+', Col: '+col
+          + (err ? '\n\n'+err.stack : '')
+          + '</pre>';
+        return true;
+      };
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
